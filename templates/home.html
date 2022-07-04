@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home Page
+{% endblock %}
+
+{% block content %}
+    {% if session.user_id %}
+    You have successfully logged in !
+    <br>
+    <a href="/user">Visit user profile</a>
+    {% else %}
+    <a href="/login">Kirjaudu sisään</a>
+    {% endif %}
+
+{% endblock %}
