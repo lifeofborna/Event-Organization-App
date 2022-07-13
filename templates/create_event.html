@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Home Page
+{% endblock %}
+
+{% block content %}
+    {% if session.user_id %}
+    <form action="/create_event" method="POST">
+        Event name: 
+        <p>
+        <textarea name ="event_name" rows="1" cols="15"></textarea>
+        </p>
+        Describe the event: 
+        <p>
+            <textarea name ="event_desc" rows="4" cols="50"></textarea>
+        </p>
+
+        Is the event public?: 
+        <p>
+            <input type="radio" name="privacy" value="1"> Yes
+            <input type="radio" name="privacy" value="0"> No
+        </p>
+        When is this event held?:
+        <p>
+            <input type="date" name="date" min="2022-04-01" max="2025-12-30">
+             </label>
+
+        </p> 
+        What is the timeframe for this event?: 
+        <p>
+            <input type="time" name="time">
+        </p>
+
+        <input type="submit" value="Create">
+    </form>
+
+    {% endif %}
+
+{% endblock %}

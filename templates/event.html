@@ -1,40 +1,44 @@
 {% extends 'base.html' %}
 
 {% block title %}
-    Home Page
+    My events
 {% endblock %}
 
 {% block content %}
-    {% if session.user_id %}
-    <form action="/create_event" method="POST">
-        Event name: 
-        <p>
-        <textarea name ="event_name" rows="1" cols="15"></textarea>
-        </p>
-        Describe the event: 
-        <p>
-            <textarea name ="event_desc" rows="4" cols="50"></textarea>
-        </p>
 
-        Is the event public?: 
-        <p>
-            <input type="radio" name="privacy" value="1"> Yes
-            <input type="radio" name="privacy" value="0"> No
-        </p>
-        When is this event held?:
-        <p>
-            <input type="date" name="date" min="2022-04-01" max="2025-12-30">
-             </label>
+    {% if event is defined and event|length %}
 
-        </p> 
-        What is the timeframe for this event?: 
-        <p>
-            <input type="time" name="time">
-        </p>
+    <br>
 
-        <input type="submit" value="Create">
-    </form>
+    <h1 class="col d-flex justify-content-center">
+        Author:  
+        {{ author }}
+    </h1>
 
+
+    <br>
+    <br>
+
+    {% for event in event %}
+
+    <br>
+    <br>
+
+    <div class="col d-flex justify-content-center">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 style="color:black;" class="card-title">Event Name: {{ event.event_name }}</h5>
+                <h6 style="color:black;" class="card-subtitle mb-2 text-muted">Event Held: {{ event.event_date }}</h6>
+                <p style="color:black;" class="card-text">{{ event.event_description }}</p>
+                <form action="/event/{{ event.event_id }}" method="POST">
+                    <button class="btn btn-primary" name="join" value="join">Join the event</button>
+                </form>
+            </div>
+        </div><br>
+        </div>
+    </div>
+    {% endfor %}
     {% endif %}
+    <br>
 
 {% endblock %}

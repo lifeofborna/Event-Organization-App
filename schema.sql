@@ -16,3 +16,10 @@ CREATE TABLE events (
     user_id INTEGER REFERENCES Users,
     PRIMARY KEY (event_id)
 );
+
+CREATE TABLE participant (
+    participant_id SERIAL,
+    user_id INTEGER REFERENCES Users,
+    event_id INTEGER REFERENCES Events,
+    PRIMARY KEY (participant_id)
+);

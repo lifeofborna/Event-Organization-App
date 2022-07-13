@@ -9,12 +9,10 @@ def login(username,password):
     user = search_for_user.fetchone()
 
     if not user:
-        print("XD")
         return False
     else:
         if check_password_hash(user.password,password):
             session["user_id"] = user.user_id
-            print("YESSSS")
             return True
         else:
             return False
@@ -39,3 +37,9 @@ def logout():
 
 def user_id():
     return session.get("user_id",0)
+
+def get_username(id):
+    sql = "SELECT username FROM users WHERE user_id=:id"
+    result = db.session.execute(sql,{"id":id})
+    author = result.fetchall()
+    return author

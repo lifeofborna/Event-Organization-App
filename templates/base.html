@@ -29,6 +29,11 @@
            <ul class="navbar-nav">
 
             {% if session.user_id %}
+               <li class="nav-item">
+                  <a class="nav-link" href="{{ url_for('my_events') }}">my events</a>
+               </li>
+
+
                 <li class="nav-item">
                     <a class="nav-link" href="{{ url_for('create_event') }}">create a event</a>
                 </li>

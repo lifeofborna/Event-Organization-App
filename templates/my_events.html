@@ -2,12 +2,10 @@
 
 
 {% block title %}
-    Home Page
+    My events
 {% endblock %}
 
-{% block content %}    
-    
-
+{% block content %}
 
     {% if my_events is defined and my_events|length %}
 
@@ -22,7 +20,7 @@
     <br>
 
     {% for my_events in my_events %}
-    
+
     <br>
     <br>
 
@@ -40,37 +38,5 @@
     {% endfor %}
     {% endif %}
     <br>
-
-
-    <h1 class="col d-flex justify-content-center">
-        Public Events
-    </h1>
-
-
-    <br>
-    <br>
-
-    {% for p_events in p_events %}
-    
-    <br>
-    <br>
-
-    <div class="col d-flex justify-content-center">
-        <div class="card" style="width: 18rem;">
-            <div class="card-body">
-                <h5 style="color:black;" class="card-title">{{ p_events.event_name }}</h5>
-                <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ p_events.event_date }}</h6>
-                <p style="color:black;" class="card-text">{{ p_events.event_description }}</p>
-                <a href="/event/{{ p_events.event_id }}" class="card-link">Show the event</a>
-            </div>
-        </div><br>
-        </div>
-    </div>
-
-    {% endfor %}
-
-    {% if session.user_id %}
-    
-    {% endif %}
 
 {% endblock %}
