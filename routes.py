@@ -38,18 +38,36 @@ def login_form():
         return redirect("/")
     
     else:
-        flash("Wrong credentials")
-        return render_template("login.html",category='warning')
+        flash("Wrong credentials",category="warning")
+        return render_template("login.html")
 
 @app.route("/logout")
 def logout():
     users.logout()
     return redirect("/")
 
-@app.route("/my_events")
-def my_events():
-    my_events = events.show_user_events(users.user_id())
-    return render_template("my_events.html",my_events = my_events)
+@app.route("/my_events", methods=["GET","POST"])
+@app.route('/my_events/<action>/<event_id>', methods=['GET', 'POST'])
+def my_events(action = None, event_id=None):
+
+    if request.method == "POST":
+        if action=="delete":
+            participants.delete_with_event_id(event_id)
+            events.delete_event(event_id)
+            return redirect("/my_events")
+        
+        if action=="modify":
+            event_name = request.form["new_event_name"]
+            event_description = request.form["new_event_desc"]
+            event_privacy = request.form["new_privacy"]
+            event_date = request.form["new_date"]
+            event_id = event_id
+            events.update_event(event_name,event_description,event_privacy,event_date,event_id)
+            return redirect("/my_events")
+
+    if request.method == "GET":
+        my_events = events.show_user_events(users.user_id())
+        return render_template("my_events.html",my_events = my_events)
 
 
 @app.route("/create_event",methods=["GET","POST"])
@@ -76,8 +94,10 @@ def event(id):
     event = events.get_event(id)
     author = events.get_event_author(id)[0][0]
 
+    get_participants = participants.get_participants(users.user_id(),id)
+
     if request.method == "GET":
-        return render_template("event.html",event=event,author=author)
+        return render_template("event.html",event=event,author=author,participants=get_participants)
     
     if request.method == "POST":
         event_participant = users.user_id()
@@ -85,9 +105,10 @@ def event(id):
 
         if participants.is_user_in_event(event_participant,event_id):
             flash("You have already joined this event!",category="warning")
-            return render_template("event.html",event=event,author=author)
+            return render_template("event.html",event=event,author=author,participants=get_participants)
 
         participants.add_user_to_event(event_participant,event_id)
         flash("You have succefully joined the event!",category="info")
+        get_participants = participants.get_participants(users.user_id(),event_id=id)
 
-        return render_template("event.html",event=event,author=author)
+        return render_template("event.html",event=event,author=author,participants=get_participants)

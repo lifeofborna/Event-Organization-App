@@ -30,15 +30,36 @@
                 <h5 style="color:black;" class="card-title">Event Name: {{ event.event_name }}</h5>
                 <h6 style="color:black;" class="card-subtitle mb-2 text-muted">Event Held: {{ event.event_date }}</h6>
                 <p style="color:black;" class="card-text">{{ event.event_description }}</p>
+                {% if session.user_id %}
                 <form action="/event/{{ event.event_id }}" method="POST">
                     <button class="btn btn-primary" name="join" value="join">Join the event</button>
                 </form>
+                {% endif %}
             </div>
         </div><br>
         </div>
     </div>
+
+    <br>
+    <br>
+    <br>
+    <br>
+    
     {% endfor %}
     {% endif %}
+
+    {% if participants is defined and participants|length %}
+
+    <div class="list-group list-group-numbered mx-auto justify-content-center w-50">
+        <a href="#" class="list-group-item list-group-item-action active">
+          Attendance
+        </a>
+        {% for participants in participants %}
+        <a href="#" class="list-group-item list-group-item-action">{{ participants }}</a>
+        {% endfor %}
+      </div>
     <br>
 
+    
+    {% endif %}
 {% endblock %}

@@ -30,7 +30,47 @@
                 <h5 style="color:black;" class="card-title">{{ my_events.event_name }}</h5>
                 <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ my_events.event_date }}</h6>
                 <p style="color:black;" class="card-text">{{ my_events.event_description }}</p>
-                <button class="btn btn-primary" name="event_info" value="event_info" href="/event/{{ my_events.event_id }}">Show the event</button>
+                <form id="form" action="{{url_for('my_events', action='delete', event_id=my_events.event_id)}}" method="POST">
+                    <button class="btn btn-danger" name="delete" value="delete">Delete event</button>
+                </form>
+                <br>
+                <form id="form" action="{{url_for('my_events', action='modify', event_id=my_events.event_id)}}" method="POST">
+                    
+                    <h9 style="color:black;" class="card-title">rename the event</h5>
+                    <p>
+                    <textarea name ="new_event_name" rows="1" cols="15"></textarea>
+                    </p>
+                    
+                    <h9 style="color:black;" class="card-title">Edit description</h5>
+                    <p>
+                        <textarea name ="new_event_desc" rows="4" cols="15"></textarea>
+                    </p>
+                    
+                    <h9 style="color:black;" class="card-title">Edit privacy</h5>
+                    <p>
+                        <p>
+                            <input type="radio" name="new_privacy" value="1" checked='checked'> Public
+                            <input type="radio" name="new_privacy" value="0" checked='checked'> Private
+                        </p>
+                    </p>
+
+                    <h9 style="color:black;" class="card-title">Edit Date</h5>
+                        <p>
+                            <input type="date" name="new_date" min="2022-04-01" max="2025-12-30">
+                             </label>
+                
+                        </p> 
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    
+                    <button class="btn btn-warning" name="modify" value="modify">Modify the event</button>
+                </form>
+
             </div>
         </div><br>
         </div>
