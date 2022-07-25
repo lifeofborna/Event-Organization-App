@@ -31,7 +31,7 @@
                 <h6 style="color:black;" class="card-subtitle mb-2 text-muted">Event Held: {{ event.event_date }}</h6>
                 <p style="color:black;" class="card-text">{{ event.event_description }}</p>
                 {% if session.user_id %}
-                <form action="/event/{{ event.event_id }}" method="POST">
+                <form action="{{ url_for('event', action='join',id=event.event_id) }}" method="POST">
                     <button class="btn btn-primary" name="join" value="join">Join the event</button>
                 </form>
                 {% endif %}
@@ -50,7 +50,7 @@
 
     {% if participants is defined and participants|length %}
 
-    <div class="list-group list-group-numbered mx-auto justify-content-center w-50">
+    <div class="list-group list-group-numbered mx-auto justify-content-center w-25">
         <a href="#" class="list-group-item list-group-item-action active">
           Attendance
         </a>
@@ -62,4 +62,42 @@
 
     
     {% endif %}
+    
+    <br>
+    <br>
+    <br>
+    <br>
+    <br>
+    {% if comment is defined and comment|length %}
+    
+
+    
+    <div class="card mx-auto justify-content-center w-25" style="width: 18rem;">
+        <ul class="list-group list-group-flush justify-content-center">
+        {% for comment in comment %}
+          <li style="color:black" class="list-group-item"  >{{ comment[0] }} by: <i style="color:purple">{{ comment[1] }}</i> Sent at:  {{comment[2].strftime("%H:%M:%S")}} </li>
+        {% endfor %}
+        
+        </ul>
+    </div>
+    {% endif %}
+    
+
+
+    <br>
+    <h9 class="col d-flex justify-content-center">
+        Leave a comment: 
+    </h1>
+    {% for event in event %}
+    
+    <form action="{{ url_for('event', action='comment',id=event.event_id) }}" method="post">
+        <divc class="col d-flex justify-content-center">
+        <textarea name ="content" rows="4" cols="50" placeholder="Type a comment..."></textarea>
+        </div>
+        <input type="submit" value="Submit">
+        </form>
+    <br>
+
+    {% endfor %}
+
 {% endblock %}

@@ -23,3 +23,12 @@ CREATE TABLE participant (
     event_id INTEGER REFERENCES Events,
     PRIMARY KEY (participant_id)
 );
+
+CREATE TABLE comments (
+    comment_id SERIAL,
+    content TEXT,
+    user_id INTEGER REFERENCES Users,
+    event_id INTEGER REFERENCES Events,
+    sent_at TIMESTAMP NOT NULL,
+    PRIMARY KEY (comment_id)
+);

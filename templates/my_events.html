@@ -17,8 +17,7 @@
 
 
     <br>
-    <br>
-
+    
     {% for my_events in my_events %}
 
     <br>
@@ -32,6 +31,10 @@
                 <p style="color:black;" class="card-text">{{ my_events.event_description }}</p>
                 <form id="form" action="{{url_for('my_events', action='delete', event_id=my_events.event_id)}}" method="POST">
                     <button class="btn btn-danger" name="delete" value="delete">Delete event</button>
+                </form>
+                <br>
+                <form id="form" action="{{url_for('my_events', action='clear_comments', event_id=my_events.event_id)}}" method="POST">
+                    <button class="btn btn-danger" name="warning" value="warning">Clear comments</button>
                 </form>
                 <br>
                 <form id="form" action="{{url_for('my_events', action='modify', event_id=my_events.event_id)}}" method="POST">
@@ -60,13 +63,6 @@
                              </label>
                 
                         </p> 
-                    
-                    
-                    
-                    
-                    
-                    
-                    
                     
                     <button class="btn btn-warning" name="modify" value="modify">Modify the event</button>
                 </form>

@@ -1,7 +1,7 @@
 from unicodedata import category
 from app import app
 from flask import render_template,request,redirect,url_for,session,flash
-import users,events,participants
+import users,events,participants,comments
 
 @app.route("/")
 def index():
@@ -53,6 +53,7 @@ def my_events(action = None, event_id=None):
     if request.method == "POST":
         if action=="delete":
             participants.delete_with_event_id(event_id)
+            comments.delete_with_event_id(event_id)
             events.delete_event(event_id)
             return redirect("/my_events")
         
@@ -64,6 +65,11 @@ def my_events(action = None, event_id=None):
             event_id = event_id
             events.update_event(event_name,event_description,event_privacy,event_date,event_id)
             return redirect("/my_events")
+        
+        if action =="clear_comments":
+            comments.delete_with_event_id(event_id)
+            return redirect("/my_events")
+
 
     if request.method == "GET":
         my_events = events.show_user_events(users.user_id())
@@ -89,26 +95,40 @@ def create_event():
             flash("Please check the input and try again!",category="warning")
             return redirect("/create_event")
 
+
 @app.route("/event/<int:id>",methods=["GET","POST"])
-def event(id):
+@app.route('/event/<int:id>/<action>', methods=['GET', 'POST'])
+def event(action=None,id=None):
     event = events.get_event(id)
     author = events.get_event_author(id)[0][0]
+    event_participant = users.user_id()
+    event_id = id
 
     get_participants = participants.get_participants(users.user_id(),id)
-
+    get_comments = comments.show_events_comments(id)
     if request.method == "GET":
-        return render_template("event.html",event=event,author=author,participants=get_participants)
+        return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)
     
     if request.method == "POST":
-        event_participant = users.user_id()
-        event_id = id
+        if action == "join":            
+            if participants.is_user_in_event(event_participant,event_id):
+                flash("You have already joined this event!",category="warning")
+                return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)
 
-        if participants.is_user_in_event(event_participant,event_id):
-            flash("You have already joined this event!",category="warning")
-            return render_template("event.html",event=event,author=author,participants=get_participants)
+            participants.add_user_to_event(event_participant,event_id)
+            flash("You have succefully joined the event!",category="info")
+            get_participants = participants.get_participants(users.user_id(),event_id=id)
 
-        participants.add_user_to_event(event_participant,event_id)
-        flash("You have succefully joined the event!",category="info")
-        get_participants = participants.get_participants(users.user_id(),event_id=id)
+            return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)
 
-        return render_template("event.html",event=event,author=author,participants=get_participants)
+        if action == "comment":
+            content = request.form["content"]
+            if users.user_id() == 0:
+                flash("You need to login to leave a comment! ",category="warning")
+                return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)
+
+            
+            comments.add_comment(content,event_participant, event_id)
+            get_comments = comments.show_events_comments(id)
+            
+            return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)
