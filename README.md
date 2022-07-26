@@ -9,11 +9,11 @@ Sovelluksen ominaisuuksiin kuuluu:
 * Käyttäjä pystyy näkemään julkisia tapahtumia ja liittyä niihin
 * Käyttäjä voi muokata omia tapahtumiaan. 
 * Käyttäjä voi poistaa tapahtuman. 
-
+* Käyttäjä voi kommentoida tapahtumaan
+* Käyttäjä voi kutsua muita käyttäjiä yksityisiin tapahtumiin. 
+* Käyttäjä voi osallistua yksityiseen tapahtumaan
 
 Lisättäviä ominaisuuksia:
 * Admin paneelin lisääminen (voi poistaa/muokata kaikkia tapahtumia)
-* Käyttäjä voi kommentoida tapahtumaan
-* Käyttäjä voi pyytää muita käyttäjiä liittymään tapahtumaan
 * Käyttäjä voi tykätä tapahtumasta tai tapahtumaan liittyvistä kommenteista
 * Hyvän tietoturvan lisääminen esimerkiksi käyttäjä ei voi poistaa toisen käyttäjän tapahtumia tai katsoa tapahtumia jotka ovat yksityisiä. 
