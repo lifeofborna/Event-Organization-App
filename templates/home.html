@@ -7,21 +7,19 @@
 
 {% block content %}    
     
-
-
-    {% if my_events is defined and my_events|length %}
+        {% if invited_events is defined and invited_events|length %}
 
     <br>
 
     <h1 class="col d-flex justify-content-center">
-        My Events
+        You have been invited to events:
     </h1>
 
 
     <br>
     <br>
 
-    {% for my_events in my_events %}
+    {% for invited_events in invited_events %}
     
     <br>
     <br>
@@ -29,10 +27,45 @@
     <div class="col d-flex justify-content-center">
         <div class="card" style="width: 18rem;">
             <div class="card-body">
-                <h5 style="color:black;" class="card-title">{{ my_events.event_name }}</h5>
-                <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ my_events.event_date }}</h6>
-                <p style="color:black;" class="card-text">{{ my_events.event_description }}</p>
-                <button class="btn btn-primary" name="event_info" value="event_info" href="/event/{{ my_events.event_id }}">Show the event</button>
+                <h5 style="color:black;" class="card-title">{{ invited_events.event_name }}</h5>
+                <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ invited_events.event_date }}</h6>
+                <p style="color:black;" class="card-text">{{ invited_events.event_description }}</p>
+                <a href="/event/{{ invited_events.event_id }}" class="card-link">Show the event</a>
+                
+            </div>
+        </div><br>
+        </div>
+    </div>
+    {% endfor %}
+    {% endif %}
+    <br>
+
+    {% if private_events is defined and private_events|length %}
+
+    <br>
+
+    <h1 class="col d-flex justify-content-center">
+        Private Events
+    </h1>
+
+
+    <br>
+    <br>
+
+    {% for private_events in private_events %}
+    
+    <br>
+    <br>
+
+    <div class="col d-flex justify-content-center">
+        <div class="card" style="width: 18rem;">
+            <div class="card-body">
+                <h5 style="color:black;" class="card-title">{{ private_events.event_name }}</h5>
+                <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ private_events.event_date }}</h6>
+                <p style="color:black;" class="card-text">{{ private_events.event_description }}</p>
+                <a href="/event/{{ private_events.event_id }}" class="card-link">Show the event</a>
+                <br>
+                <a href="{{ url_for('search_users', id=private_events.event_id) }}" class="card-link">Invite a member</a>
             </div>
         </div><br>
         </div>

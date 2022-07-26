@@ -1,12 +1,18 @@
 from unicodedata import category
+
 from app import app
 from flask import render_template,request,redirect,url_for,session,flash
 import users,events,participants,comments
 
 @app.route("/")
 def index():
-    p_events = events.show_all_public_events()
-    return render_template('home.html',p_events=p_events)
+    user = users.user_id()
+    public_events = events.show_all_public_events()
+    private_events = events.show_all_private_events(user)
+    invited_events = events.show_all_invited_events(user)
+
+
+    return render_template('home.html',p_events=public_events, private_events=private_events,invited_events=invited_events)
 
 @app.route("/register",methods=["GET","POST"])
 def register_form():
@@ -132,3 +138,22 @@ def event(action=None,id=None):
             get_comments = comments.show_events_comments(id)
             
             return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)
+
+@app.route("/users/<int:id>",methods=["GET","POST"])
+def search_users(id = None):
+    if request.method == "GET":
+        return render_template("search_users.html",event_id=id)
+    
+    if request.method == "POST":
+        searched_user = users.search_users(request.form["query"])[0][0]
+        uid = users.get_user_id_by_username(searched_user)[0][0]
+        
+        if searched_user:
+            invite_user = users.invite_user_to_event(uid,id)
+            if invite_user:
+                flash(f"You have successfully invited user {searched_user}",category="info")
+            else:
+                flash(f"User {searched_user} has already been invited !",category="warning")
+
+        
+        return render_template("search_users.html",event_id=id)

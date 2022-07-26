@@ -43,3 +43,37 @@ def get_username(id):
     result = db.session.execute(sql,{"id":id})
     author = result.fetchall()
     return author
+
+def get_user_id_by_username(username):
+    sql = "SELECT user_id FROM users WHERE username=:username"
+    result = db.session.execute(sql,{"username":username})
+    author = result.fetchall()
+    return author
+
+def search_users(query):
+    sql = "SELECT username FROM users WHERE username =:query"
+    result = db.session.execute(sql,{"query":query})
+    users = result.fetchall()
+    return users
+
+
+def user_invited(user_id,event_id):
+    sql = "SELECT * FROM invited WHERE user_id=:user_id AND event_id=:event_id"
+    result = db.session.execute(sql,{"user_id":user_id, "event_id":event_id})
+    author = result.fetchall()
+
+    if author:
+        return True
+    return False
+
+def invite_user_to_event(user_id, event_id):
+    if user_invited(user_id,event_id):
+        return False
+
+    if user_id and event_id:
+        sql = "INSERT into invited (user_id,event_id) VALUES (:user_id,:event_id)"
+        db.session.execute(sql, { "user_id":user_id, "event_id":event_id})
+        db.session.commit()
+        return True
+
+    return False

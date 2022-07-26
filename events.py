@@ -3,7 +3,6 @@ from flask import session
 import users
 
 
-#give all parameters > add db
 def create_event(name,desc,privacy,date,timeframe,user_id):
     if privacy == "1":
         privacy = True
@@ -19,13 +18,26 @@ def create_event(name,desc,privacy,date,timeframe,user_id):
         return True
     return False
 
-#return all events
 def show_all_public_events():
-    
     sql = "SELECT * FROM events WHERE ispublic = True"
     result = db.session.execute(sql)
     return result.fetchall()
 
+def show_all_private_events(user_id):
+    sql = "SELECT * FROM events WHERE ispublic = False AND user_id=:user_id  "
+    result = db.session.execute(sql,{"user_id":user_id})
+    events = result.fetchall()
+    return events
+
+def show_all_invited_events(user_id):
+    sql = "SELECT * FROM events E, invited I WHERE I.user_id=:user_id AND E.event_id=I.event_id AND NOT EXISTS (SELECT * FROM participant P WHERE P.user_id=I.user_id AND P.event_id=I.event_id)"
+    
+    
+    result = db.session.execute(sql,{"user_id":user_id})
+    events = result.fetchall()
+    print(events)
+    
+    return events
 
 def show_user_events(id):
     sql = "SELECT * FROM events WHERE user_id=:id"
@@ -33,7 +45,6 @@ def show_user_events(id):
     events = result.fetchall()
     return events
 
-#delete all events
 def get_event(id):
     sql = "SELECT * FROM events WHERE event_id=:id"
     result = db.session.execute(sql,{"id":id})
@@ -49,8 +60,6 @@ def get_event_author(id):
     return author
 
 def delete_event(event_id):
-    
-    print(event_id)
     sql = "DELETE FROM events WHERE event_id=:event_id"
     db.session.execute(sql,{"event_id":event_id})
     db.session.commit()

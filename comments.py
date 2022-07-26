@@ -15,11 +15,9 @@ def show_events_comments(id):
     result = db.session.execute(sql, { "id":id})
     all_results = result.fetchall()
 
-    print(all_results)
     return all_results
 
 def delete_with_event_id(event_id):
-    print(event_id)
     sql = "DELETE FROM comments WHERE event_id=:event_id"
     db.session.execute(sql,{"event_id":event_id})
     db.session.commit()

@@ -32,3 +32,11 @@ CREATE TABLE comments (
     sent_at TIMESTAMP NOT NULL,
     PRIMARY KEY (comment_id)
 );
+
+CREATE TABLE invited (
+    user_id INTEGER,
+    event_id INTEGER,
+    PRIMARY KEY(user_id,event_id),
+    FOREIGN KEY (event_id) REFERENCES events(event_id) ON DELETE CASCADE,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);

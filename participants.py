@@ -27,7 +27,6 @@ def get_participants(user_id,event_id):
         user_ids.append(users.get_username(i[0])[0][0])
     return user_ids
 
-
 def delete_with_event_id(event_id):
     try:
         sql = "DELETE FROM participant WHERE event_id=:event_id"
