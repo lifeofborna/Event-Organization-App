@@ -31,8 +31,7 @@ def show_all_private_events(user_id):
 
 def show_all_invited_events(user_id):
     sql = "SELECT * FROM events E, invited I WHERE I.user_id=:user_id AND E.event_id=I.event_id AND NOT EXISTS (SELECT * FROM participant P WHERE P.user_id=I.user_id AND P.event_id=I.event_id)"
-    
-    
+
     result = db.session.execute(sql,{"user_id":user_id})
     events = result.fetchall()
     print(events)

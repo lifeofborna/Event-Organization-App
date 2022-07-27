@@ -1,6 +1,7 @@
 from db import db
-from flask import session
+from flask import session,request,abort
 from werkzeug.security import check_password_hash, generate_password_hash
+from secrets import token_hex
 
 
 def login(username,password):
@@ -13,6 +14,7 @@ def login(username,password):
     else:
         if check_password_hash(user.password,password):
             session["user_id"] = user.user_id
+            session["csrf_token"] = token_hex(16)
             return True
         else:
             return False
@@ -77,3 +79,7 @@ def invite_user_to_event(user_id, event_id):
         return True
 
     return False
+
+def authorization_csrf():
+    if session["csrf_token"] != request.form["csrf_token"]:
+        abort(403)

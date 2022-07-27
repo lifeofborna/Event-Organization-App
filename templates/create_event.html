@@ -33,6 +33,7 @@
         </p>
 
         <input type="submit" value="Create">
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
 
     {% endif %}

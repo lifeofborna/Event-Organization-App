@@ -33,6 +33,7 @@
                 {% if session.user_id %}
                 <form action="{{ url_for('event', action='join',id=event.event_id) }}" method="POST">
                     <button class="btn btn-primary" name="join" value="join">Join the event</button>
+                    <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
                 </form>
                 {% endif %}
             </div>
@@ -93,6 +94,7 @@
     <form action="{{ url_for('event', action='comment',id=event.event_id) }}" method="post">
         <divc class="col d-flex justify-content-center">
         <textarea name ="content" rows="4" cols="50" placeholder="Type a comment..."></textarea>
+        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </div>
         <input type="submit" value="Submit">
         </form>
