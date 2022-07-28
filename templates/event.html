@@ -6,6 +6,8 @@
 
 {% block content %}
 
+        
+    </style>
     {% if event is defined and event|length %}
 
     <br>
@@ -44,39 +46,37 @@
     <br>
     <br>
     <br>
-    <br>
     
     {% endfor %}
     {% endif %}
 
     {% if participants is defined and participants|length %}
 
-    <div class="list-group list-group-numbered mx-auto justify-content-center w-25">
-        <a href="#" class="list-group-item list-group-item-action active">
-          Attendance
-        </a>
-        {% for participants in participants %}
-        <a href="#" class="list-group-item list-group-item-action">{{ participants }}</a>
-        {% endfor %}
-      </div>
-    <br>
+        <div style="width: 18rem;" class="list-group list-group-numbered mx-auto justify-content-center">
+            <a href="#" class="list-group-item list-group-item-action active">
+            Attendance
+            </a>
+            {% for participants in participants %}
+            <a href="#" class="list-group-item list-group-item-action">{{ participants }}</a>
+            {% endfor %}
+        </div>
 
-    
+
     {% endif %}
     
     <br>
     <br>
     <br>
-    <br>
-    <br>
+
+
     {% if comment is defined and comment|length %}
     
 
     
-    <div class="card mx-auto justify-content-center w-25" style="width: 18rem;">
+    <div class="card mx-auto justify-content-center" style="width: 18rem;">
         <ul class="list-group list-group-flush justify-content-center">
         {% for comment in comment %}
-          <li style="color:black" class="list-group-item"  >{{ comment[0] }} by: <i style="color:purple">{{ comment[1] }}</i> Sent at:  {{comment[2].strftime("%H:%M:%S")}} </li>
+          <li style="color:black;" class="list-group-item"  >  {{ comment[0] }} by: <i style="color:purple">{{ comment[1] }}</i> Sent at:  {{comment[2].strftime("%H:%M:%S")}} </li>
         {% endfor %}
         
         </ul>
@@ -92,7 +92,7 @@
     {% for event in event %}
     
     <form action="{{ url_for('event', action='comment',id=event.event_id) }}" method="post">
-        <divc class="col d-flex justify-content-center">
+        <divc class="col d-flex justify-content-center" style="width: 28rem;">
         <textarea name ="content" rows="4" cols="50" placeholder="Type a comment..."></textarea>
         <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
         </div>
