@@ -17,3 +17,6 @@ Lisättäviä ominaisuuksia:
 * Admin paneelin lisääminen (voi poistaa/muokata kaikkia tapahtumia)
 * Käyttäjä voi tykätä tapahtumasta tai tapahtumaan liittyvistä kommenteista
 * Hyvän tietoturvan lisääminen esimerkiksi käyttäjä ei voi poistaa toisen käyttäjän tapahtumia tai katsoa tapahtumia jotka ovat yksityisiä. 
+
+
+Sovellusta voi kokeilla herokun kautta: https://tsoha-eventx.herokuapp.com/
