@@ -158,8 +158,8 @@ def event(action=None,id=None):
                 flash("You need to login to leave a comment! ",category="warning")
                 return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)            
             
-            if len(content) > 50:
-                flash("Max size for a comment is 50 characters ! ",category="warning")
+            if len(content) > 250:
+                flash("Max size for a comment is 250 characters ! ",category="warning")
                 get_comments = comments.show_events_comments(id)
                 return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)
             
@@ -179,7 +179,7 @@ def search_users(id = None):
     if request.method == "POST":
         users.authorization_csrf()
         searched_user = users.search_users(request.form["query"])
-        
+
         if searched_user:
             uid = users.get_user_id_by_username(searched_user[0][0])[0][0]
             invite_user = users.invite_user_to_event(uid,id)
@@ -194,6 +194,27 @@ def search_users(id = None):
         return render_template("search_users.html",event_id=id)
 
 
+@app.route("/attending_to", methods=["GET","POST"])
+@app.route('/attending_to/<action>/<event_id>', methods=['GET', 'POST'])
+def attending_to(action=None, event_id=None):
+    if check_authorization(auth_level="login") == False:
+        return redirect("/login")
+
+    if request.method == "GET":
+        attending_events = participants.get_events_from_participant(users.user_id())
+        return render_template("attending.html",events=attending_events)
+
+    if request.method == "POST":
+        users.authorization_csrf()
+
+        if action == "cancel_attendance":
+            user_id = users.user_id()
+            print(event_id,user_id)
+            participants.cancel_attendance(user_id,event_id)
+            event_name = events.get_event_name(event_id)
+            flash(f"You have successfully cancelled your attendance to {event_name}! ",category="info")
+            return redirect("/attending_to")
+            
 def check_authorization(auth_level, action=None,event_id=None):
     if auth_level=="login":
         if users.user_id() == 0:

@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    Attending to events
+{% endblock %}
+
+
+{% block content %}
+<br>
+<h1 class="col d-flex justify-content-center">
+    You are attending to: 
+</h1>
+
+
+<br>
+<br>
+{% if events is defined and events|length %}
+{% for event in events %}
+
+<br>
+<br>
+
+<div class="col d-flex justify-content-center">
+    <div class="card" style="width: 18rem;">
+        <div class="card-body">
+            <h5 style="color:black;" class="card-title">{{ event.event_name }}</h5>
+            <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ event.event_date }}</h6>
+            <p style="color:black;" class="card-text">{{ event.event_description }}</p>
+            <a href="/event/{{ event.event_id }}" class="card-link">Show the event</a>
+            <br>
+            <form id="form" action="{{url_for('attending_to', action='cancel_attendance', event_id=event.event_id)}}" method="POST">
+                <button  class="card-link" name="warning" value="warning">cancel attendance</button>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form>
+            
+        </div>
+    </div><br>
+    </div>
+</div>
+{% endfor %}
+{% endif %}
+<br>
+
+{% endblock %}

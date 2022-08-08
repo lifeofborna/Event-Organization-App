@@ -54,9 +54,15 @@ def get_event_author(id):
     sql = "SELECT user_id FROM events WHERE event_id=:id"
     result = db.session.execute(sql,{"id":id})
     user_id = result.fetchall()[0][0]
-
     author = users.get_username(user_id)
     return author
+
+def get_event_name(id):
+    sql = "SELECT event_name FROM events WHERE event_id=:id"
+    result = db.session.execute(sql,{"id":id})
+    event_name = result.fetchall()[0][0]
+    return event_name
+
 
 def delete_event(event_id):
     sql = "DELETE FROM events WHERE event_id=:event_id"
