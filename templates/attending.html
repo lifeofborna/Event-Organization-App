@@ -7,14 +7,15 @@
 
 {% block content %}
 <br>
-<h1 class="col d-flex justify-content-center">
-    You are attending to: 
-</h1>
 
 
 <br>
 <br>
 {% if events is defined and events|length %}
+<h1 class="col d-flex justify-content-center">
+    You are attending to: 
+</h1>
+
 {% for event in events %}
 
 <br>
@@ -38,6 +39,11 @@
     </div>
 </div>
 {% endfor %}
+{% else %}
+<h1 class="col d-flex justify-content-center">
+    You have no events to attend
+</h1>
+
 {% endif %}
 <br>
 

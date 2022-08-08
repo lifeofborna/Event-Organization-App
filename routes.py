@@ -183,8 +183,9 @@ def search_users(id = None):
         if searched_user:
             uid = users.get_user_id_by_username(searched_user[0][0])[0][0]
             invite_user = users.invite_user_to_event(uid,id)
+            
             if invite_user:
-                flash(f"You have successfully invited user {searched_user}",category="info")
+                flash(f"You have successfully invited user {searched_user[0][0]}",category="info")
             else:
                 flash(f"User {searched_user[0][0]} has already been invited !",category="warning")
         else: 
