@@ -4,10 +4,11 @@ import users,events,participants,comments
 
 @app.route("/")
 def index():
+    events.clear_old_events()
     user = users.user_id()
     public_events = events.show_all_public_events()
-    private_events = events.show_all_private_events(user)
-    invited_events = events.show_all_invited_events(user)
+    private_events = events.show_all_private_events_with_id(user)
+    invited_events = events.show_all_invited_events_with_id(user)
 
 
     return render_template('home.html',p_events=public_events, private_events=private_events,invited_events=invited_events)

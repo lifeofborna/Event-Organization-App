@@ -45,7 +45,7 @@ def cancel_attendance(user_id,event_id):
     db.session.commit()
 
 def get_events_from_participant(user_id):
-    sql = "SELECT * FROM events E, participant P WHERE P.user_id=:user_id AND P.event_id=E.event_id "
+    sql = "SELECT * FROM events E, participant P WHERE P.user_id=:user_id AND P.event_id=E.event_id ORDER BY E.event_date "
     result = db.session.execute(sql, { "user_id":user_id} )
     matches = result.fetchall()
     return matches
