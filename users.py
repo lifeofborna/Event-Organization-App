@@ -2,6 +2,7 @@ from db import db
 from flask import session,request,abort
 from werkzeug.security import check_password_hash, generate_password_hash
 from secrets import token_hex
+from app import app
 
 
 def login(username,password):
@@ -15,15 +16,16 @@ def login(username,password):
         if check_password_hash(user.password,password):
             session["user_id"] = user.user_id
             session["csrf_token"] = token_hex(16)
+            session["is_admin"] = check_if_admin()
             return True
         else:
             return False
 
-
-
 def register(username,password):
     hashed_password = generate_password_hash(password)
-    isadmin = False
+    if username == "admin":
+        isadmin = True
+    else: isadmin = False
     
     try:
         sql = "INSERT into users (username,password,isadmin) VALUES (:username,:password,:isadmin)"
@@ -39,6 +41,16 @@ def logout():
 
 def user_id():
     return session.get("user_id",0)
+
+def check_if_admin():
+    uid = user_id()
+    sql = "SELECT * FROM users WHERE user_id=:uid AND isadmin=TRUE"
+    result = db.session.execute(sql,{"uid":uid})
+    is_admin = result.fetchall()
+    if is_admin:
+        return True
+    else:
+        return False
 
 def get_username(id):
     sql = "SELECT username FROM users WHERE user_id=:id"
@@ -79,6 +91,8 @@ def invite_user_to_event(user_id, event_id):
         return True
 
     return False
+
+
 
 def authorization_csrf():
     if session["csrf_token"] != request.form["csrf_token"]:

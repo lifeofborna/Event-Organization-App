@@ -4,6 +4,7 @@ import users,events,participants,comments
 
 @app.route("/")
 def index():
+    is_admin = users.check_if_admin()
     events.clear_old_events()
     user = users.user_id()
     public_events = events.show_all_public_events()
@@ -11,7 +12,7 @@ def index():
     invited_events = events.show_all_invited_events_with_id(user)
 
 
-    return render_template('home.html',p_events=public_events, private_events=private_events,invited_events=invited_events)
+    return render_template('home.html',p_events=public_events, private_events=private_events,invited_events=invited_events,is_admin=is_admin)
 
 @app.route("/register",methods=["GET","POST"])
 def register_form():
@@ -76,8 +77,8 @@ def my_events(action = None, event_id=None):
             event_date = request.form["new_date"]
             event_id = event_id
 
-            if len(event_name) > 30 or len(event_description) > 150:
-                flash("Please use a valid input! max length for description is 150 characters and for title 30!",category="warning")
+            if len(event_name) > 30 or len(event_description) > 350:
+                flash("Please use a valid input! max length for description is 350 characters and for title 30!",category="warning")
                 return redirect("/my_events")
                 
             events.update_event(event_name,event_description,event_privacy,event_date,event_id)
@@ -91,6 +92,9 @@ def my_events(action = None, event_id=None):
 
 
     if request.method == "GET":
+        if users.check_if_admin():
+            my_events = events.get_all_events()
+            return render_template("my_events.html",my_events = my_events)
         my_events = events.show_user_events(users.user_id())
         return render_template("my_events.html",my_events = my_events)
 
@@ -111,9 +115,16 @@ def create_event():
         event_timeframe = request.form["time"]
         user_id = users.user_id()
         
-        if len(event_name) > 30 or len(event_description) > 150:
-                flash("Please use a valid input! max length for description is 150 characters and for title 30!",category="warning")
-                return redirect("/create_event")
+        if len(event_name) > 30 or len(event_description) > 350:
+                flash("Please use a valid input! max length for description is 350 characters and for title 30!",category="warning")
+                return render_template("create_event.html",values=True,
+                event_name = request.form["event_name"], 
+                event_description = request.form["event_desc"],
+                event_privacy = request.form["privacy"],
+                event_date = request.form["date"],
+                event_timeframe = request.form["time"] 
+                )
+                
         if events.create_event(event_name, event_description,event_privacy,event_date,event_timeframe,user_id):
             flash("You have successfully created a event!",category="info")
             return redirect("/")
@@ -216,8 +227,29 @@ def attending_to(action=None, event_id=None):
             event_name = events.get_event_name(event_id)
             flash(f"You have successfully cancelled your attendance to {event_name}! ",category="info")
             return redirect("/attending_to")
-            
+
+
+@app.route("/admin",methods=["GET", "POST"])
+def admin_panel():
+    if request.method == "GET":
+        return render_template("admin_panel.html")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 def check_authorization(auth_level, action=None,event_id=None):
+    if users.check_if_admin():
+        return True
     if auth_level=="login":
         if users.user_id() == 0:
             flash("Please login for such actions! ",category="warning")

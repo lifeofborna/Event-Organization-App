@@ -30,6 +30,7 @@
                 <h5 style="color:black;" class="card-title">{{ invited_events.event_name }}</h5>
                 <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ invited_events.event_date }}</h6>
                 <p style="color:black;" class="card-text">{{ invited_events.event_description }}</p>
+
                 <a href="/event/{{ invited_events.event_id }}" class="card-link">Show the event</a>
                 
             </div>
@@ -92,7 +93,7 @@
         <div class="card" style="width: 18rem;">
             <div class="card-body">
                 <h5 style="color:black;" class="card-title">{{ p_events.event_name }}</h5>
-                <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ p_events.event_date }}</h6>
+                <h6 style="color:black;" class="card-subtitle mb-2 text-muted">{{ p_events.event_date }} at {{  p_events.event_time  }}</h6>
                 <p style="color:black;" class="card-text">{{ p_events.event_description }}</p>
                 <a href="/event/{{ p_events.event_id }}" class="card-link">Show the event</a>
             </div>
