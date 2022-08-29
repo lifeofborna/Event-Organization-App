@@ -6,6 +6,29 @@
 {% endblock %}
 
 {% block content %}    
+
+    <br>
+    <br>
+
+    </head>
+    <body>
+        <div class="dropdown col-md-10 text-right" style="height: 200px;">
+        <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+            Sort events by
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+            <form action="{{ url_for('index', action='order_participant') }}" method="POST">
+                <button class="btn" name="join" value="join">most participants</button>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form>
+            <form action="{{ url_for('index', action='order_comments') }}" method="POST">
+                <button class="btn" name="join" value="join">most comments</button>
+                <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+            </form>
+        </ul>
+        </div>
+    </body>
+    </html>
     
         {% if invited_events is defined and invited_events|length %}
 
@@ -15,6 +38,7 @@
         You have been invited to events:
     </h1>
 
+    
 
     <br>
     <br>
@@ -80,9 +104,8 @@
         Public Events
     </h1>
 
+    
 
-    <br>
-    <br>
 
     {% for p_events in p_events %}
     

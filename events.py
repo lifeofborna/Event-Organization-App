@@ -2,6 +2,8 @@ from db import db
 from flask import session
 import users,participants,comments
 from datetime import date
+from datetime import datetime
+
 
 def create_event(name,desc,privacy,date,timeframe,user_id):
     if privacy == "1":
@@ -12,10 +14,13 @@ def create_event(name,desc,privacy,date,timeframe,user_id):
         privacy = "notset"
 
     if name != "" and privacy != "notset" and date != "" and timeframe != "":
-        sql = "INSERT INTO events (event_name,event_description,event_date,event_time,ispublic,user_id) VALUES (:event_name,:event_description,:event_date,:event_time,:ispublic,:user_id)"
-        db.session.execute(sql,{"event_name":name,"event_description":desc,"event_date":date,"event_time":timeframe,"ispublic":privacy,"user_id":int(user_id)})
-        db.session.commit()
-        return True
+        try:
+            sql = "INSERT INTO events (event_name,event_description,event_date,event_time,ispublic,user_id) VALUES (:event_name,:event_description,:event_date,:event_time,:ispublic,:user_id)"
+            db.session.execute(sql,{"event_name":name,"event_description":desc,"event_date":date,"event_time":timeframe,"ispublic":privacy,"user_id":int(user_id)})
+            db.session.commit()
+            return True
+        except:
+            return False
     return False
 
 def show_all_public_events():
@@ -30,8 +35,8 @@ def show_all_private_events_with_id(user_id):
     return events
 
 def show_all_invited_events_with_id(user_id):
-    sql = "SELECT * FROM events E, invited I WHERE I.user_id=:user_id AND E.event_id=I.event_id AND NOT EXISTS (SELECT * FROM participant P WHERE P.user_id=I.user_id AND P.event_id=I.event_id) ORDER BY E.event_date"
 
+    sql = "SELECT * FROM events JOIN invited ON invited.user_id=:user_id AND events.event_id=invited.event_id AND NOT EXISTS (SELECT * FROM participant P WHERE P.user_id=invited.user_id AND P.event_id=invited.event_id) ORDER BY events.event_date"
     result = db.session.execute(sql,{"user_id":user_id})
     events = result.fetchall()    
     return events
@@ -73,6 +78,17 @@ def delete_event(event_id):
     db.session.execute(sql,{"event_id":event_id})
     db.session.commit()
     return True
+
+def is_old_event(given_date):
+    print(given_date)
+    event_date = datetime.strptime(given_date,'%Y-%m-%d').date()
+    print(event_date)
+    todays_date = date.today()
+
+    if (event_date > todays_date) == False:
+        return True
+    else:
+        return False
 
 def clear_old_events():
     events = get_all_events()

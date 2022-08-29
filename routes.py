@@ -2,17 +2,33 @@ from app import app
 from flask import render_template,request,redirect,url_for,session,flash
 import users,events,participants,comments
 
-@app.route("/")
-def index():
-    is_admin = users.check_if_admin()
+@app.route("/", methods=["GET","POST"])
+@app.route('/home/<action>/', methods=['GET', 'POST'])
+def index(action = None):
     events.clear_old_events()
+    is_admin = users.check_if_admin()
     user = users.user_id()
-    public_events = events.show_all_public_events()
-    private_events = events.show_all_private_events_with_id(user)
-    invited_events = events.show_all_invited_events_with_id(user)
 
+    if request.method == "POST":
+        if action=="order_participant":
+            flash("Events are now ordered by most participants!",category="info")
+            public_events = participants.order_by_max_participants()
+            private_events = participants.order_by_max_participants_private(user)
+            invited_events = events.show_all_invited_events_with_id(user)
+            return render_template('home.html',p_events=public_events, private_events=private_events,invited_events=invited_events,is_admin=is_admin)
 
-    return render_template('home.html',p_events=public_events, private_events=private_events,invited_events=invited_events,is_admin=is_admin)
+        if action =="order_comments":
+            flash("Events are now ordered by via most comments! ",category="info")
+            public_events = comments.order_via_most_comments()
+            private_events = comments.order_via_most_comments_private(user)
+            invited_events = events.show_all_invited_events_with_id(user)
+            return render_template('home.html',p_events=public_events, private_events=private_events,invited_events=invited_events,is_admin=is_admin)
+
+    if request.method == "GET":
+        public_events = events.show_all_public_events()
+        private_events = events.show_all_private_events_with_id(user)
+        invited_events = events.show_all_invited_events_with_id(user)
+        return render_template('home.html',p_events=public_events, private_events=private_events,invited_events=invited_events,is_admin=is_admin)
 
 @app.route("/register",methods=["GET","POST"])
 def register_form():
@@ -124,13 +140,29 @@ def create_event():
                 event_date = request.form["date"],
                 event_timeframe = request.form["time"] 
                 )
+        elif events.is_old_event(event_date):
+            flash("The event you have set is in the past! Please try again! ",category="warning")
+            return render_template("create_event.html",values=True,
+                event_name = request.form["event_name"], 
+                event_description = request.form["event_desc"],
+                event_privacy = request.form["privacy"],
+                event_date = request.form["date"],
+                event_timeframe = request.form["time"] 
+                )
+
                 
         if events.create_event(event_name, event_description,event_privacy,event_date,event_timeframe,user_id):
             flash("You have successfully created a event!",category="info")
             return redirect("/")
         else:
             flash("Please check the input and try again!",category="warning")
-            return redirect("/create_event")
+            return render_template("create_event.html",values=True,
+                event_name = request.form["event_name"], 
+                event_description = request.form["event_desc"],
+                event_privacy = request.form["privacy"],
+                event_date = request.form["date"],
+                event_timeframe = request.form["time"] 
+                )
 
 
 @app.route("/event/<int:id>",methods=["GET","POST"])
@@ -180,6 +212,7 @@ def event(action=None,id=None):
             get_comments = comments.show_events_comments(id)
             return render_template("event.html",event=event,author=author,participants=get_participants,comment=get_comments)
 
+
 @app.route("/users/<int:id>",methods=["GET","POST"])
 def search_users(id = None):
     if check_authorization(auth_level="login") == False:
@@ -227,24 +260,6 @@ def attending_to(action=None, event_id=None):
             event_name = events.get_event_name(event_id)
             flash(f"You have successfully cancelled your attendance to {event_name}! ",category="info")
             return redirect("/attending_to")
-
-
-@app.route("/admin",methods=["GET", "POST"])
-def admin_panel():
-    if request.method == "GET":
-        return render_template("admin_panel.html")
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 def check_authorization(auth_level, action=None,event_id=None):

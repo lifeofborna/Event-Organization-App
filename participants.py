@@ -49,3 +49,32 @@ def get_events_from_participant(user_id):
     result = db.session.execute(sql, { "user_id":user_id} )
     matches = result.fetchall()
     return matches
+
+def order_by_max_participants():
+    sql = """
+    SELECT E.event_id, E.event_name, E.event_description, E.event_date, E.event_time
+    FROM events E
+    LEFT OUTER JOIN participant P ON (E.event_id = P.event_id AND E.ispublic=True) WHERE
+    E.ispublic = True
+    GROUP BY E.event_id, E.event_name, E.event_description, E.event_date, E.event_time
+    ORDER BY COUNT(*) DESC
+    """
+
+    result = db.session.execute(sql)
+    matches = result.fetchall()
+    return matches
+
+def order_by_max_participants_private(user_id):
+    sql = """
+    SELECT E.event_id, E.event_name, E.event_description, E.event_date, E.event_time
+    FROM events E
+    LEFT OUTER JOIN participant P ON (E.event_id = P.event_id AND E.ispublic=False AND P.user_id=:user_id) 
+    WHERE E.ispublic = False AND P.user_id=:user_id
+    GROUP BY E.event_id, E.event_name, E.event_description, E.event_date, E.event_time
+    ORDER BY COUNT(*) DESC
+    """
+
+    result = db.session.execute(sql,{"user_id":user_id})
+    matches = result.fetchall()
+    return matches
+
