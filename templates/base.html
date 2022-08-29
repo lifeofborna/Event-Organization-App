@@ -31,14 +31,6 @@
            <ul class="navbar-nav">
 
             {% if session.user_id %}
-
-               {% if session.is_admin %}
-
-               <li class="nav-item">
-                  <a class="nav-link" href="{{ url_for('admin_panel') }}">admin panel</a>
-               </li>
-               {% endif %}
-
             <li class="nav-item">
                <a class="nav-link" href="{{ url_for('attending_to') }}">attendance</a>
             </li>
